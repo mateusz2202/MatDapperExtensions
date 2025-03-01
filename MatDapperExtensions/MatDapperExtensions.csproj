@@ -8,9 +8,10 @@
 
   <PropertyGroup>
     <PackageId>MatDapperExtensions</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.4</Version>
     <Authors>MJ</Authors>
     <Company>Mat</Company>
+    <RepositoryUrl>https://github.com/mateusz2202/MatDapperExtensions</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
