@@ -1,6 +1,7 @@
 ﻿using MatDapperExtensions.Connection;
 using MatDapperExtensions.Factory;
 using MatDapperExtensions.Handler;
+using MatDapperExtensions.Repositories;
 using MatDapperExtensions.Service;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -19,6 +20,8 @@ public static class Install
         services.AddTransient(retryPolicyFactory);
         services.AddTransient<IDapperService, DapperService>();
         services.AddTransient(logErrorHandler);
+        services.AddTransient<IRepository, Repository>();
+
         return services;
     }
 
@@ -31,6 +34,8 @@ public static class Install
         services.AddTransient(retryPolicyFactory);
         services.AddTransient<IDapperService, DapperService>();
         services.AddTransient<ILogErrorHandler, LogErrorHandler>();
+        services.AddTransient<IRepository, Repository>();
+
         return services;
     }
 
@@ -42,6 +47,8 @@ public static class Install
         services.AddTransient<IRetryPolicyFactory, RetryPolicyFactory>();
         services.AddTransient<IDapperService, DapperService>();
         services.AddTransient<ILogErrorHandler, LogErrorHandler>();
+        services.AddTransient<IRepository, Repository>();
+
         return services;
     }
 }
