@@ -83,7 +83,7 @@ public class Repository(IDapperService dapperRetryService)
 
     public async Task<PaginationResult<dynamic>> GetAllAsync<T>(string procedureName, QueryOptions queryOptions)
     {
-        var (valid, filter) = SqlFilter.GenerateFiltr(queryOptions.Filter);
+        var (valid, filter) = SqlFilter.Generate(queryOptions.Filter);
 
         if (!valid)
             return await PaginationResult<dynamic>.FailAsync(filter);

@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>MatDapperExtensions</PackageId>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
     <Authors>MJ</Authors>
     <Company>Mat</Company>
     <RepositoryUrl>https://github.com/mateusz2202/MatDapperExtensions</RepositoryUrl>
@@ -17,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="MatResultPattern" Version="1.0.9" />
-    <PackageReference Include="MatSqlFilter" Version="1.0.3" />
+    <PackageReference Include="MatSqlFilter" Version="1.0.4" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
     <PackageReference Include="Polly" Version="8.5.2" />
