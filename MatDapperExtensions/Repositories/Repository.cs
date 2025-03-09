@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MatDapperExtensions.Service;
+using MatSqlFilter;
 using ResultPattern;
 using System;
 using System.Collections.Generic;
@@ -82,7 +83,7 @@ public class Repository(IDapperService dapperRetryService)
 
     public async Task<PaginationResult<dynamic>> GetAllAsync<T>(string procedureName, QueryOptions queryOptions)
     {
-        var (valid, filter) = SqlFilter.Generate(queryOptions.Filters);
+        var (valid, filter) = SqlFilter.GenerateFiltr(queryOptions.Filter);
 
         if (!valid)
             return await PaginationResult<dynamic>.FailAsync(filter);
