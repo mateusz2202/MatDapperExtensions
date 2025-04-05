@@ -51,4 +51,15 @@ public static class Install
 
         return services;
     }
+
+    public static IServiceCollection AddMatDapperExtensions(this IServiceCollection services, string connectionString)
+    {
+        services.AddTransient<IDbConnectionFactory>(x => new DbConnectionFactory(connectionString));
+        services.AddTransient<IRetryPolicyFactory, RetryPolicyFactory>();
+        services.AddTransient<IDapperService, DapperService>();
+        services.AddTransient<ILogErrorHandler, LogErrorHandler>();
+        services.AddTransient<IRepository, Repository>();
+
+        return services;
+    }
 }
