@@ -1,5 +1,4 @@
-﻿using Dapper;
-using ResultPattern;
+﻿using ResultPattern;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ namespace MatDapperExtensions.Repositories;
 public interface IRepository
 {
     Task<Result<Guid>> AddAsync<T>(string procedureName, T data);
-    Task<Result<bool>> AddAsync<T>(string procedureName, T data, DynamicParameters paramOut = null);
+    Task<Result<bool>> AddAsync<T>(string procedureName, T data, object paramOut = null);
     Task<Result<T>> GetAsync<T>(string procedureName, Guid publicId);
     Task<Result<T>> GetAsync<T>(string procedureName, object param = null);
     Task<Result<List<T>>> GetAllAsync<T>(string procedureName);

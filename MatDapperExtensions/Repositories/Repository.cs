@@ -1,12 +1,12 @@
 ﻿using Dapper;
 using MatDapperExtensions.Service;
+using MatDapperExtensions.Utils;
 using MatSqlFilter;
 using ResultPattern;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MatDapperExtensions.Repositories;
@@ -16,10 +16,7 @@ public class Repository(IDapperService dapperRetryService)
 {
     public async Task<Result<Guid>> AddAsync<T>(string procedureName, T data)
     {
-        var param = new DynamicParameters();
-        param.Add("@Data", JsonSerializer.Serialize(data));
-        param.Add("@PublicId", dbType: DbType.Guid, direction: ParameterDirection.Output);
-        AddCommonOutputParameters(param);
+        var param = data.CreateParamAsDataJson().AddOutPublicId();
 
         await dapperRetryService.ExecuteAsyncWithRetry(procedureName, param, commandType: CommandType.StoredProcedure);
 
@@ -32,12 +29,9 @@ public class Repository(IDapperService dapperRetryService)
 
         return await Result<Guid>.SuccessAsync(key);
     }
-    public async Task<Result<bool>> AddAsync<T>(string procedureName, T data, DynamicParameters paramOut)
+    public async Task<Result<bool>> AddAsync<T>(string procedureName, T data, object paramOut)
     {
-        var param = new DynamicParameters(paramOut);
-        param.Add("@Data", JsonSerializer.Serialize(data));
-
-        AddCommonOutputParameters(param);
+        var param = data.CreateParamAsDataJson().AddParams(paramOut);
 
         await dapperRetryService.ExecuteAsyncWithRetry(procedureName, param, commandType: CommandType.StoredProcedure);
 
@@ -51,8 +45,7 @@ public class Repository(IDapperService dapperRetryService)
 
     public async Task<Result<T>> GetAsync<T>(string procedureName, Guid publicId)
     {
-        var param = new DynamicParameters();
-        param.Add("@PublicId", publicId);
+        var param = new DynamicParameters().AddPublicId(publicId);
 
         var resultSQL = await dapperRetryService.QueryFirstOrDefaultAsyncWithRetry<T>(procedureName, param, commandType: CommandType.StoredProcedure);
 
@@ -101,7 +94,7 @@ public class Repository(IDapperService dapperRetryService)
         param.Add("@PageSize", pager.PageSize, DbType.Int32, ParameterDirection.Input);
         param.Add("@TotalRows", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-        AddCommonOutputParameters(param);
+        param.AddErrorStatusMessage();
 
         var resultSQL = await dapperRetryService.QueryAsyncWithRetry<dynamic>(procedureName, param, commandType: CommandType.StoredProcedure);
 
@@ -128,11 +121,7 @@ public class Repository(IDapperService dapperRetryService)
 
     public async Task<Result<bool>> UpdateAsync<T>(string procedureName, Guid publicId, T data)
     {
-        var param = new DynamicParameters();
-        param.Add("@Data", JsonSerializer.Serialize(data));
-        param.Add("@PublicId", publicId);
-
-        AddCommonOutputParameters(param);
+        var param = data.CreateParamAsDataJson().AddPublicId(publicId);
 
         await dapperRetryService.ExecuteAsyncWithRetry(procedureName, param, commandType: CommandType.StoredProcedure);
 
@@ -146,10 +135,9 @@ public class Repository(IDapperService dapperRetryService)
 
     public async Task<Result<bool>> DeleteAsync(string procedureName, Guid publicId)
     {
-        var param = new DynamicParameters();
-        param.Add("@PublicId", publicId);
+        var param = new DynamicParameters().AddPublicId(publicId);
 
-        AddCommonOutputParameters(param);
+        param.AddErrorStatusMessage();
 
         await dapperRetryService.ExecuteAsyncWithRetry(procedureName, param, commandType: CommandType.StoredProcedure);
 
@@ -160,11 +148,10 @@ public class Repository(IDapperService dapperRetryService)
 
         return await Result<bool>.SuccessAsync(true);
     }
+
     public async Task<Result<bool>> DeleteAsync(string procedureName, object param = null)
     {
-        var parameters = new DynamicParameters(param);
-
-        AddCommonOutputParameters(parameters);
+        var parameters = new DynamicParameters(param).AddErrorStatusMessage();
 
         await dapperRetryService.ExecuteAsyncWithRetry(procedureName, parameters, commandType: CommandType.StoredProcedure);
 
@@ -175,12 +162,4 @@ public class Repository(IDapperService dapperRetryService)
 
         return await Result<bool>.SuccessAsync(true);
     }
-
-    private static void AddCommonOutputParameters(DynamicParameters param)
-    {
-        param.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
-        param.Add("@ErrorMessage", dbType: DbType.String, direction: ParameterDirection.Output, size: 200);
-        param.Add("@ErrorNumber", dbType: DbType.Int32, direction: ParameterDirection.Output);
-    }
-
 }

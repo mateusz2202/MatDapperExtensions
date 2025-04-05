@@ -10,6 +10,3 @@ public sealed class QueryOptions
     public List<string> Columns { get; set; }
     public Pager Pager { get; set; }
 }
-
-
-
