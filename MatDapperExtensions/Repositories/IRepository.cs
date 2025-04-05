@@ -7,7 +7,7 @@ namespace MatDapperExtensions.Repositories;
 
 public interface IRepository
 {
-    Task<Result<Guid>> AddAsync<T>(string procedureName, T data);
+    Task<Result<Guid>> AddAsync<T>(string procedureName, T data, bool dataJson = true);
     Task<Result<bool>> AddAsync<T>(string procedureName, T data, object paramOut = null);
     Task<Result<T>> GetAsync<T>(string procedureName, Guid publicId);
     Task<Result<T>> GetAsync<T>(string procedureName, object param = null);

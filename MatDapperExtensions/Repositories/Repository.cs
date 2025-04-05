@@ -14,9 +14,9 @@ namespace MatDapperExtensions.Repositories;
 public class Repository(IDapperService dapperRetryService)
     : IRepository
 {
-    public async Task<Result<Guid>> AddAsync<T>(string procedureName, T data)
+    public async Task<Result<Guid>> AddAsync<T>(string procedureName, T data, bool dataJson = true)
     {
-        var param = data.CreateParamAsDataJson().AddOutPublicId();
+        var param = (dataJson ? data.CreateParamAsDataJson() : data.CreateParam()).AddOutPublicId();
 
         await dapperRetryService.ExecuteAsyncWithRetry(procedureName, param, commandType: CommandType.StoredProcedure);
 
@@ -29,6 +29,7 @@ public class Repository(IDapperService dapperRetryService)
 
         return await Result<Guid>.SuccessAsync(key);
     }
+
     public async Task<Result<bool>> AddAsync<T>(string procedureName, T data, object paramOut)
     {
         var param = data.CreateParamAsDataJson().AddParams(paramOut);
